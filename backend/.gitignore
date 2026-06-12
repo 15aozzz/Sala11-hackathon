@@ -1,0 +1,17 @@
+# Compiled code and logs
+node_modules
+dist
+npm-debug.log
+yarn-error.log
+lerna-debug.log
+
+# Environment variables and credentials
+.env
+
+# IDE and OS files
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+/generated/prisma

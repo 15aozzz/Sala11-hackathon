@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model CanalSnapshot {
+  id                 Int             @id @default(autoincrement())
+  channelId          String
+  name               String
+  subscriberCount    Int
+  totalViews         BigInt
+  videoCount         Int
+  engagementPromedio Float
+  fetchedDate        String          // Guarda formato YYYY-MM-DD
+  videos             VideoSnapshot[]
+
+  @@index([channelId, fetchedDate])
+}
+
+model VideoSnapshot {
+  id              Int           @id @default(autoincrement())
+  snapshotId      Int
+  snapshot        CanalSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  videoId         String
+  title           String
+  views           Int
+  likes           Int
+  comments        Int
+  engagement      Float
+  durationSeconds Int
+  isShort         Boolean
+  publishedDate   String        // YYYY-MM-DD
+}
