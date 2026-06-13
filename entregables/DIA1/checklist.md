@@ -1,6 +1,6 @@
 # Checklist - Día 1: Conectar la API + Esqueleto + Consolidado
 
-## 📋 Antes de codear
+## Antes de codear
 
 - [x] Escribir `Prediccion/prediccion.md` con las fórmulas de engagement y reglas de cuota.
 - [ ] Hacer primer commit: `git commit -m "DASH-D1-START"` (Checklist + .gitignore con API key fuera del repo).
