@@ -33,6 +33,7 @@ export class ChannelsService {
         totalViews: Number(snapshotExistente.totalViews),
         videoCount: snapshotExistente.videoCount,
         engagementPromedio: snapshotExistente.engagementPromedio,
+        customImageUrl: snapshotExistente.customImageUrl,
         videos: snapshotExistente.videos.map((v) => ({
           id: v.videoId,
           title: v.title,
@@ -88,7 +89,7 @@ export class ChannelsService {
     // 8. Calcular engagement promedio del canal
     const engagementPromedio = validVideosCount > 0
       ? parseFloat((totalEngagement / validVideosCount).toFixed(2))
-      : 0;
+      : null;
 
     // 9. Guardar el nuevo snapshot en la base de datos de manera atómica
     await this.prisma.canalSnapshot.create({
@@ -100,6 +101,7 @@ export class ChannelsService {
         videoCount: channelInfo.videoCount,
         engagementPromedio: engagementPromedio,
         fetchedDate: hoy,
+        customImageUrl: channelInfo.customImageUrl || null,
         videos: {
           create: formattedVideos.map((v) => ({
             videoId: v.id,
@@ -107,7 +109,7 @@ export class ChannelsService {
             views: v.views,
             likes: v.likes,
             comments: v.comments,
-            engagement: v.engagement || 0,
+            engagement: v.engagement,
             durationSeconds: v.durationSeconds,
             isShort: v.isShort,
             publishedDate: v.publishedAt,
@@ -123,7 +125,35 @@ export class ChannelsService {
       totalViews: channelInfo.totalViews,
       videoCount: channelInfo.videoCount,
       engagementPromedio,
+      customImageUrl: channelInfo.customImageUrl || null,
       videos: formattedVideos,
     };
+  }
+
+  async getAllChannels() {
+    const snapshots = await this.prisma.canalSnapshot.findMany({
+      orderBy: {
+        fetchedDate: 'desc',
+      },
+    });
+
+    // Agrupar por channelId para traer solo el último snapshot de cada canal
+    const latestSnapshotsMap = new Map<string, typeof snapshots[0]>();
+    for (const snapshot of snapshots) {
+      if (!latestSnapshotsMap.has(snapshot.channelId)) {
+        latestSnapshotsMap.set(snapshot.channelId, snapshot);
+      }
+    }
+
+    return Array.from(latestSnapshotsMap.values()).map(snapshot => ({
+      id: snapshot.channelId,
+      name: snapshot.name,
+      subscriberCount: snapshot.subscriberCount,
+      totalViews: Number(snapshot.totalViews),
+      videoCount: snapshot.videoCount,
+      engagementPromedio: snapshot.engagementPromedio,
+      fetchedDate: snapshot.fetchedDate,
+      customImageUrl: snapshot.customImageUrl,
+    }));
   }
 }

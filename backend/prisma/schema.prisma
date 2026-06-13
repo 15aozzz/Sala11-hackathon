@@ -16,8 +16,9 @@ model CanalSnapshot {
   subscriberCount    Int
   totalViews         BigInt
   videoCount         Int
-  engagementPromedio Float
+  engagementPromedio Float?
   fetchedDate        String          // Guarda formato YYYY-MM-DD
+  customImageUrl     String?
   videos             VideoSnapshot[]
 
   @@index([channelId, fetchedDate])
@@ -32,7 +33,7 @@ model VideoSnapshot {
   views           Int
   likes           Int
   comments        Int
-  engagement      Float
+  engagement      Float?
   durationSeconds Int
   isShort         Boolean
   publishedDate   String        // YYYY-MM-DD

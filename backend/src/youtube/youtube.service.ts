@@ -8,6 +8,7 @@ export interface YoutubeChannelInfo {
   totalViews: number;
   videoCount: number;
   uploadsPlaylistId: string;
+  customImageUrl?: string;
 }
 
 export interface YoutubeVideoStats {
@@ -61,6 +62,7 @@ export class YoutubeService {
       totalViews: parseInt(channel.statistics.viewCount || '0', 10),
       videoCount: parseInt(channel.statistics.videoCount || '0', 10),
       uploadsPlaylistId: channel.contentDetails.relatedPlaylists.uploads,
+      customImageUrl: channel.snippet.thumbnails?.medium?.url || channel.snippet.thumbnails?.default?.url || "",
     };
   }
 
